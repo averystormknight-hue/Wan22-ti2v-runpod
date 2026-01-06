@@ -1,0 +1,18 @@
+{
+  "tests": [
+    {
+      "name": "smoke",
+      "timeout": 1800,
+      "input": {
+        "prompt": "A slow pan across a neon-lit city street at night.",
+        "negative_prompt": "blurry, low quality, distorted",
+        "image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=",
+        "width": 480,
+        "height": 832,
+        "length": 81,
+        "steps": 10,
+        "cfg": 2.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Wan2.2 TI2V Serverless",
+  "description": "Wan2.2 text+image-to-video serverless worker with LoRA support (ComfyUI workflow).",
+  "type": "serverless",
+  "category": "video",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 20,
+    "jobTimeoutSec": 3600
+  }
+}
