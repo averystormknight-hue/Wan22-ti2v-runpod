@@ -1,29 +1,50 @@
-#!/usr/bin/env bash
-set -euo pipefail
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 
-# Wire shared storage safely
-if [ -d /runpod-volume ]; then
-  mkdir -p /runpod-volume/models
-  mkdir -p /runpod-volume/loras
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1
 
-  # Link /comfyui/models -> /runpod-volume/models if not an existing non-symlink dir
-  if [ -e /comfyui/models ] && [ ! -L /comfyui/models ]; then
-    echo "Found existing /comfyui/models (not a symlink); leaving in place."
-  else
-    ln -sfn /runpod-volume/models /comfyui/models
-  end
+# System deps (includes common runtime libs often needed by image/video stacks)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip git curl ffmpeg \
+    libgl1 libglib2.0-0 fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
 
-  # Link loras without deleting user data
-  if [ -e /comfyui/models/loras ] && [ ! -L /comfyui/models/loras ]; then
-    echo "Found existing /comfyui/models/loras (not a symlink); leaving in place."
-  else
-    ln -sfn /runpod-volume/loras /comfyui/models/loras
-  fi
-fi
+# ComfyUI (pinned)
+WORKDIR /comfyui
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git . \
+ && git checkout acbf08c
 
-mkdir -p /comfyui/input
-mkdir -p /comfyui/output
+# CUDA-enabled torch stack (cu121) before other Python deps
+RUN pip3 install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 \
+    --extra-index-url https://download.pytorch.org/whl/cu121
 
-# Start ComfyUI, then your handler. If you want handler to be PID1, swap to use 'exec'.
-python3 /comfyui/main.py --listen 0.0.0.0 --port 8188 --disable-auto-launch &
+# ComfyUI requirements
+RUN pip3 install -r requirements.txt
+
+# Custom nodes (all pinned)
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git custom_nodes/ComfyUI-VideoHelperSuite \
+ && cd custom_nodes/ComfyUI-VideoHelperSuite && git checkout 3234937ff5f3ca19068aaba5042771514de2429d
+
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git custom_nodes/ComfyUI-KJNodes \
+ && cd custom_nodes/ComfyUI-KJNodes && git checkout 7b13271
+
+RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git custom_nodes/ComfyUI-WanVideoWrapper \
+ && cd custom_nodes/ComfyUI-WanVideoWrapper && git checkout bf1d77f
+
+# Install node-specific deps when present
+RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \
+    if [ -f "$NODE" ]; then echo "Installing dependencies for $NODE"; pip3 install -r "$NODE"; fi; \
+done
+
+# App layer
+WORKDIR /app
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+# Ensure entrypoint script is executable
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]
 python3 -u /app/handler.py
