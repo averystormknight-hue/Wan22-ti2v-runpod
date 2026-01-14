@@ -102,3 +102,12 @@ If you only have a single LoRA file (no paired low/high), set the other side to 
 ## Notes
 - TI2V requires an image input (`image_url`, `image_base64`, or `image_path`).
 - Build times are long due to pinned ComfyUI + custom nodes.
+
+## Troubleshooting: "commit does not belong to any branch"
+- This message appears when you deploy from a detached commit (e.g., downloading a ZIP or checking out a specific commit SHA). RunPod cannot verify or sync that state.
+- Fix: create a branch that points at the commit, push it, and set RunPod to use that branch:
+  ```bash
+  git checkout -b main            # or another branch name you want to deploy
+  git push -u origin main
+  ```
+- In the RunPod UI, click **Sync from GitHub** and ensure the worker uses the branch you just pushed.
