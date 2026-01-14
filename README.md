@@ -104,7 +104,7 @@ If you only have a single LoRA file (no paired low/high), set the other side to 
 - Build times are long due to pinned ComfyUI + custom nodes.
 
 ## Troubleshooting: Docker build context errors
-- If you see an error like `unable to prepare context: path "/app/.../temp/https:/github.com/averystormknight-hue/Wan22-ti2v-runpod.git" not found`, make sure the build context is the checked-out repository (use `.`) and that the Git URL keeps the double slash in `https://`.
+- If you see an error like `unable to prepare context: path "/app/.../temp/https:/github.com/averystormknight-hue/Wan22-ti2v-runpod.git" not found` (note the missing second slash), make sure the build context is the checked-out repository (use `.`) and that the Git URL keeps the double slash in `https://`.
 - Example local build flow:
   ```bash
   git clone https://github.com/averystormknight-hue/Wan22-ti2v-runpod.git
