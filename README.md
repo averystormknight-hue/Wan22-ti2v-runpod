@@ -103,6 +103,15 @@ If you only have a single LoRA file (no paired low/high), set the other side to 
 - TI2V requires an image input (`image_url`, `image_base64`, or `image_path`).
 - Build times are long due to pinned ComfyUI + custom nodes.
 
+## Troubleshooting: Docker build context errors
+- If you see an error like `unable to prepare context: path "/app/.../temp/https:/github.com/averystormknight-hue/Wan22-ti2v-runpod.git" not found`, make sure the build context is the checked-out repository (use `.`) and that the Git URL keeps the double slash in `https://`.
+- Example local build flow:
+  ```bash
+  git clone https://github.com/averystormknight-hue/Wan22-ti2v-runpod.git
+  cd Wan22-ti2v-runpod
+  docker build -t wan22-ti2v-runpod:latest .
+  ```
+
 ## Troubleshooting: "commit does not belong to any branch"
 - This message appears when you deploy from a detached commit (e.g., downloading a ZIP or checking out a specific commit SHA). RunPod cannot verify or sync that state.
 - Fix: create a branch that points at the commit, push it, and set RunPod to use that branch:
