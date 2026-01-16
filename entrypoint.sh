@@ -10,6 +10,13 @@ if [ -d /runpod-volume ]; then
   MODEL_ROOT="/runpod-volume/models"
   LORA_ROOT="/runpod-volume/loras"
 
+elif [ -d /workspace ]; then
+  # Some RunPod templates mount the volume at /workspace; normalize to expected path
+  mkdir -p /workspace/models /workspace/loras
+  MODEL_ROOT="/workspace/models"
+  LORA_ROOT="/workspace/loras"
+  ln -sfn /workspace /runpod-volume
+
   if [ -e /comfyui/models ] && [ ! -L /comfyui/models ]; then
     mv /comfyui/models "/comfyui/models.local.$(date +%s)"
   fi
