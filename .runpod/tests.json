@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "healthcheck",
+      "timeout": 300,
+      "input": {
+        "test_mode": true,
+        "prompt": "test",
+        "negative_prompt": "",
+        "width": 480,
+        "height": 832,
+        "length": 8,
+        "steps": 2,
+        "cfg": 2.0,
+        "image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
+      }
+    }
+  ]
+}

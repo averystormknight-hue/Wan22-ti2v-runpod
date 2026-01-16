@@ -151,8 +151,11 @@ def get_output_file(history):
 
 
 def handler(job):
-    wait_for_comfyui()
     inp = job.get("input", {})
+    if inp.get("test_mode"):
+        return {"status": "ok"}
+
+    wait_for_comfyui()
 
     image_filename = save_input_image(inp)
     if not image_filename:
