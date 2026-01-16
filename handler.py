@@ -164,13 +164,28 @@ def handler(job):
     mapping = build_mapping(inp, image_filename)
     workflow = replace_tokens(workflow, mapping)
 
-    resp = requests.post(f"{COMFY_URL}/prompt", json={"prompt": workflow})
-    resp.raise_for_status()
-    prompt_id = resp.json()["prompt_id"]
+    try:
+        resp = requests.post(
+            f"{COMFY_URL}/prompt",
+            json={"prompt": workflow},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        prompt_id = resp.json()["prompt_id"]
+    except requests.exceptions.RequestException as exc:
+        return {"error": f"Failed to submit prompt to ComfyUI: {exc}"}
 
     start = time.time()
     while time.time() - start < 1800:
-        hist = requests.get(f"{COMFY_URL}/history/{prompt_id}").json()
+        try:
+            hist_resp = requests.get(
+                f"{COMFY_URL}/history/{prompt_id}",
+                timeout=10,
+            )
+            hist_resp.raise_for_status()
+            hist = hist_resp.json()
+        except (requests.exceptions.RequestException, ValueError) as exc:
+            return {"error": f"Failed while polling ComfyUI: {exc}"}
         if prompt_id in hist:
             out_path = get_output_file(hist[prompt_id])
             if out_path:
