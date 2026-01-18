@@ -11,7 +11,7 @@ RunPod Serverless worker for Wan2.2 text + image to video (TI2V) with LoRA suppo
 - Auto-downloads model weights when no volume is attached
 - Runsync-compatible API responses with base64 video output
 
-## Requirements
+## Requirements 
 - GPU: 80GB VRAM recommended
 - Network Volume: 100GB recommended (optional but best for persistence)
 - If no volume is attached, ensure container disk is large enough (40GB+).
