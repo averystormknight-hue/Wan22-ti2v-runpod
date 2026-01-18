@@ -156,6 +156,7 @@ def get_output_file(history):
 def handler(job):
     inp = job.get("input", {})
     if inp.get("test_mode"):
+        print("[TI2V] test_mode short-circuit")
         return {"status": "ok"}
 
     wait_for_comfyui()
