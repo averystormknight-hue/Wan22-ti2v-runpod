@@ -72,7 +72,7 @@
   "136": {
     "inputs": {
       "model_name": "umt5_xxl_fp16.safetensors",
-      "precision": "fp16",
+      "precision": "bf16",
       "load_device": "offload_device",
       "quantization": "disabled"
     },
