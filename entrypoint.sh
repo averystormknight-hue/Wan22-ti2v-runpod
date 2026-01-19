@@ -62,7 +62,40 @@ if [ "${NOVA_SKIP_MODEL_DOWNLOAD:-0}" != "1" ]; then
     "${WAN_BASE_21}/clip_vision/clip_vision_h.safetensors" \
     "${MODEL_ROOT}/clip_vision/clip_vision_h.safetensors"
 else
-  echo "Skipping model downloads (NOVA_SKIP_MODEL_DOWNLOAD=1)."
+  REQUIRED=(
+    "${MODEL_ROOT}/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors"
+    "${MODEL_ROOT}/vae/wan2.2_vae.safetensors"
+    "${MODEL_ROOT}/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    "${MODEL_ROOT}/clip_vision/clip_vision_h.safetensors"
+  )
+  MISSING=0
+  for f in "${REQUIRED[@]}"; do
+    if [ ! -s "$f" ]; then
+      MISSING=1
+      break
+    fi
+  done
+
+  if [ "$MISSING" -eq 1 ]; then
+    echo "NOVA_SKIP_MODEL_DOWNLOAD=1 set, but required models are missing. Downloading anyway…"
+    WAN_BASE="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files"
+    WAN_BASE_21="https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files"
+
+    download_if_missing \
+      "${WAN_BASE}/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors" \
+      "${MODEL_ROOT}/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors"
+    download_if_missing \
+      "${WAN_BASE}/vae/wan2.2_vae.safetensors" \
+      "${MODEL_ROOT}/vae/wan2.2_vae.safetensors"
+    download_if_missing \
+      "${WAN_BASE_21}/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors" \
+      "${MODEL_ROOT}/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    download_if_missing \
+      "${WAN_BASE_21}/clip_vision/clip_vision_h.safetensors" \
+      "${MODEL_ROOT}/clip_vision/clip_vision_h.safetensors"
+  else
+    echo "Skipping model downloads (NOVA_SKIP_MODEL_DOWNLOAD=1 and all required models present)."
+  fi
 fi
 
 mkdir -p /comfyui/input
