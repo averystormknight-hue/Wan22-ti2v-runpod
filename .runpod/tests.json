@@ -17,6 +17,7 @@
     }
   ],
   "config": {
+    "cpuFlavor": "13th Gen Intel(R) Core(TM) i5-13600K",
     "env": [
       {"key": "NOVA_SKIP_MODEL_DOWNLOAD", "value": "1"}
     ]
