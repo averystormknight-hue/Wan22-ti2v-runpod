@@ -11,3 +11,18 @@
          image_cond = image_embeds.get("image_embeds", None)
          if image_cond is not None:
              if transformer.in_dim == 16:
+                 raise ValueError("T2V (text to video) model detected, encoded images only work with I2V (Image to video) models")
+             elif transformer.in_dim not in [48, 32]: # fun 2.1 models don't use the mask
+                 image_cond_mask = image_embeds.get("mask", None)
+@@
+             if image_cond_mask is not None:
+                 image_cond = torch.cat([image_cond_mask, image_cond])
+             else:
+                 image_cond[:, 1:] = 0
+
+            # Clamp/pad image_cond channels to expected transformer input dim
+            if image_cond.shape[1] > transformer.in_dim:
+                image_cond = image_cond[:, : transformer.in_dim]
+            elif image_cond.shape[1] < transformer.in_dim:
+                pad = transformer.in_dim - image_cond.shape[1]
+                image_cond = torch.nn.functional.pad(image_cond, (0, 0, 0, 0, 0, 0, 0, pad))
