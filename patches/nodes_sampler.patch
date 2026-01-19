@@ -8,7 +8,8 @@
 -        story_mem_latents = image_embeds.get("story_mem_latents", None)
 +        image_cond_mask = None
 +        story_mem_latents = image_embeds.get("story_mem_latents", None)
-         image_cond = image_embeds.get("image_embeds", None)
+        # Force T2V mode: ignore image embeddings to avoid channel mismatch on 5B model
+        image_cond = None
          if image_cond is not None:
              if transformer.in_dim == 16:
                  raise ValueError("T2V (text to video) model detected, encoded images only work with I2V (Image to video) models")
