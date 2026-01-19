@@ -32,7 +32,8 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git custom_nodes/ComfyUI-
  && cd custom_nodes/ComfyUI-KJNodes && git checkout 7b13271
 
 RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git custom_nodes/ComfyUI-WanVideoWrapper \
- && cd custom_nodes/ComfyUI-WanVideoWrapper && git checkout bf1d77f
+ && cd custom_nodes/ComfyUI-WanVideoWrapper && git checkout bf1d77f \
+ && sed -i 's/^        story_mem_latents = image_embeds.get(\"story_mem_latents\", None)/        image_cond_mask = None\\n        story_mem_latents = image_embeds.get(\"story_mem_latents\", None)/' nodes_sampler.py
 
 # Install node-specific deps when present
 RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \
