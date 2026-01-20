@@ -36,7 +36,7 @@ RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git custom_nodes/
 
 # Apply local patch to WanVideoWrapper (init image_cond_mask)
 COPY patches /patches
-RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 < /patches/nodes_sampler.patch
+RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 -N --silent < /patches/nodes_sampler.patch || true
 
 # Install node-specific deps when present
 RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \
