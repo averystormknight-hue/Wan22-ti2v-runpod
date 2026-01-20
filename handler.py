@@ -172,8 +172,19 @@ def handler(job):
 
     wait_for_comfyui()
 
-    # T2V endpoint: image is optional; if provided we ignore it to avoid I2V-only path
+    # T2V endpoint: image is optional; ensure a placeholder exists to keep loaders happy
     image_filename = save_input_image(inp)
+    if not image_filename:
+        os.makedirs(INPUT_DIR, exist_ok=True)
+        placeholder = os.path.join(INPUT_DIR, "placeholder_1x1.png")
+        if not os.path.exists(placeholder):
+            # 1x1 transparent PNG
+            png_bytes = base64.b64decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
+            )
+            with open(placeholder, "wb") as f:
+                f.write(png_bytes)
+        image_filename = os.path.basename(placeholder)
 
     with open(WORKFLOW_PATH, "r") as f:
         workflow = json.load(f)
