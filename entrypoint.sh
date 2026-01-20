@@ -75,6 +75,32 @@ if [ "${NOVA_SKIP_MODEL_DOWNLOAD:-0}" != "1" ]; then
   download_if_missing \
     "${WAN_BASE_21}/clip_vision/clip_vision_h.safetensors" \
     "${MODEL_ROOT}/clip_vision/clip_vision_h.safetensors"
+
+  # Preload T2V LoRAs (4 pairs) for 14B without needing a volume
+  download_if_missing \
+    "https://huggingface.co/wolfer45/masturbationv1dtwr-high-t2v-wan22/resolve/main/masturbationv1dtwr-high-t2v-wan22.safetensors" \
+    "${LORA_ROOT}/masturbationv1dtwr-high-t2v-wan22.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wolfer45/masturbationv1dtwr-low-t2v-wan22/resolve/main/masturbationv1dtwr-low-t2v-wan22.safetensors" \
+    "${LORA_ROOT}/masturbationv1dtwr-low-t2v-wan22.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-missionary-pov-t2v-high.safetensors" \
+    "${LORA_ROOT}/wan22-action-missionary-pov-t2v-high.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-missionary-pov-t2v-low.safetensors" \
+    "${LORA_ROOT}/wan22-action-missionary-pov-t2v-low.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-doggystyle-t2v-14b-high.safetensors" \
+    "${LORA_ROOT}/wan22-action-doggystyle-t2v-14b-high.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-doggystyle-t2v-14b-low.safetensors" \
+    "${LORA_ROOT}/wan22-action-doggystyle-t2v-14b-low.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-orgasm-t2v-14b-high.safetensors" \
+    "${LORA_ROOT}/wan22-action-orgasm-t2v-14b-high.safetensors"
+  download_if_missing \
+    "https://huggingface.co/wangkanai/wan22-fp8-t2v-loras-nsfw/resolve/main/loras/wan/wan22-action-orgasm-t2v-14b-low.safetensors" \
+    "${LORA_ROOT}/wan22-action-orgasm-t2v-14b-low.safetensors"
 else
   REQUIRED=(
     "${MODEL_ROOT}/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors"
@@ -82,6 +108,14 @@ else
     "${MODEL_ROOT}/vae/wan_2.1_vae.safetensors"
     "${MODEL_ROOT}/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
     "${MODEL_ROOT}/clip_vision/clip_vision_h.safetensors"
+    "${LORA_ROOT}/masturbationv1dtwr-high-t2v-wan22.safetensors"
+    "${LORA_ROOT}/masturbationv1dtwr-low-t2v-wan22.safetensors"
+    "${LORA_ROOT}/wan22-action-missionary-pov-t2v-high.safetensors"
+    "${LORA_ROOT}/wan22-action-missionary-pov-t2v-low.safetensors"
+    "${LORA_ROOT}/wan22-action-doggystyle-t2v-14b-high.safetensors"
+    "${LORA_ROOT}/wan22-action-doggystyle-t2v-14b-low.safetensors"
+    "${LORA_ROOT}/wan22-action-orgasm-t2v-14b-high.safetensors"
+    "${LORA_ROOT}/wan22-action-orgasm-t2v-14b-low.safetensors"
   )
   MISSING=0
   for f in "${REQUIRED[@]}"; do
