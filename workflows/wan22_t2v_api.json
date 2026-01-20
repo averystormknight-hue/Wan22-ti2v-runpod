@@ -156,12 +156,12 @@
         "556",
         0
       ],
-      "image_embeds": [
-        "541",
-        0
-      ],
       "text_embeds": [
         "135",
+        0
+      ],
+      "samples": [
+        "541",
         0
       ],
       "context_options": [
@@ -243,10 +243,6 @@
         "552",
         0
       ],
-      "image_embeds": [
-        "541",
-        0
-      ],
       "text_embeds": [
         "135",
         0
@@ -272,19 +268,10 @@
         "236",
         0
       ],
-      "num_frames": "__LENGTH__",
-      "noise_aug_strength": 0,
-      "start_latent_strength": 1,
-      "end_latent_strength": 1,
-      "force_offload": true,
-      "fun_or_fl2v_model": false,
-      "tiled_vae": false,
-      "vae": [
-        "129",
-        0
-      ]
+      "length": "__LENGTH__",
+      "batch_size": 1
     },
-    "class_type": "WanVideoImageToVideoEncode"
+    "class_type": "EmptyLatentVideo"
   },
   "549": {
     "inputs": {
