@@ -268,10 +268,9 @@
         "236",
         0
       ],
-      "length": "__LENGTH__",
-      "batch_size": 1
+      "batch_size": "__LENGTH__"
     },
-    "class_type": "EmptyLatentVideo"
+    "class_type": "EmptyLatentImage"
   },
   "549": {
     "inputs": {
