@@ -189,6 +189,14 @@ def handler(job):
     with open(WORKFLOW_PATH, "r") as f:
         workflow = json.load(f)
 
+    # Force attention_mode to 'sdpa' to support non-H100 GPUs (e.g. A100/L40)
+    for node_id in ("122", "549"):
+        if node_id in workflow:
+            inputs = workflow[node_id].get("inputs", {})
+            if "attention_mode" in inputs:
+                print(f"Forcing attention_mode to 'sdpa' on node {node_id}")
+                inputs["attention_mode"] = "sdpa"
+
     mapping = build_mapping(inp, image_filename)
     workflow = replace_tokens(workflow, mapping)
     workflow = strip_image_conditioning(workflow)
