@@ -37,6 +37,11 @@ RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git custom_nodes/
 COPY patches /patches
 RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 -N --silent < /patches/nodes_sampler.patch || true
 
+# Force-disable the T2V check that blocks image_embeds (since we use dummy embeds)
+RUN sed -i 's/if self.model_type == "t2v":/if False and self.model_type == "t2v":/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+# Also handle the variant if the variable name is different (e.g. model.model_type)
+RUN sed -i 's/if model_type == "t2v":/if False and model_type == "t2v":/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+
 # Install node-specific deps when present
 RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \
     if [ -f "$NODE" ]; then echo "Installing dependencies for $NODE"; pip3 install -r "$NODE"; fi; \
