@@ -38,9 +38,7 @@ COPY patches /patches
 RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 -N --silent < /patches/nodes_sampler.patch || true
 
 # Force-disable the T2V check that blocks image_embeds (since we use dummy embeds)
-RUN sed -i 's/if self.model_type == "t2v":/if False and self.model_type == "t2v":/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
-# Also handle the variant if the variable name is different (e.g. model.model_type)
-RUN sed -i 's/if model_type == "t2v":/if False and model_type == "t2v":/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+RUN sed -i 's/if transformer.in_dim == 16:/if False and transformer.in_dim == 16:/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
 
 # Install node-specific deps when present
 RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \
