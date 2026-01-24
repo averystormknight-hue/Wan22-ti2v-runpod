@@ -38,7 +38,8 @@ COPY patches /patches
 RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 -N --silent < /patches/nodes_sampler.patch || true
 
 # Force-disable the T2V check that blocks image_embeds (since we use dummy embeds)
-RUN sed -i 's/if transformer.in_dim == 16:/if False and transformer.in_dim == 16:/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+# Inject image_cond = None to force T2V mode and avoid tensor mismatch
+RUN sed -i 's/has_ref = image_embeds.get("has_ref", False)/has_ref = image_embeds.get("has_ref", False); image_cond = None/' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
 
 # Install node-specific deps when present
 RUN for NODE in /comfyui/custom_nodes/*/requirements.txt; do \

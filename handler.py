@@ -138,10 +138,11 @@ def build_mapping(inp, image_filename):
 
 def strip_image_conditioning(workflow):
     """Remove image-based conditioning so T2V models don't trigger I2V-only path."""
-    for node_id in ("541",):
+    for node_id in ():
         if node_id in workflow and isinstance(workflow[node_id], dict):
             inputs = workflow[node_id].get("inputs", {})
             if isinstance(inputs, dict):
+                inputs["image_embeds"] = None
                 inputs["start_image"] = None
                 inputs["image"] = None
     return workflow
