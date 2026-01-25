@@ -143,9 +143,17 @@ def switch_to_t2v_node(workflow):
         node["class_type"] = "WanVideoEmptyEmbeds"
         inputs = node.get("inputs", {})
         
-        # WanVideoEmptyEmbeds uses 'video_frames' instead of 'num_frames'
-        if "num_frames" in inputs:
-            inputs["video_frames"] = inputs.pop("num_frames")
+        # Standardize frame count parameters
+        length = inputs.get("num_frames", inputs.get("video_frames", "__LENGTH__"))
+        inputs["num_frames"] = length
+        inputs["video_frames"] = length
+        inputs["empty_latent_video_frames"] = length
+        
+        # Standardize dimension parameters
+        width = inputs.get("width", "__WIDTH__")
+        height = inputs.get("height", "__HEIGHT__")
+        inputs["empty_latent_width"] = width
+        inputs["empty_latent_height"] = height
         
         # Remove inputs not needed for T2V empty embeds
         for key in ["start_image", "image", "vae", "clip_embeds"]:
