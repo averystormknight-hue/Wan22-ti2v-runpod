@@ -39,8 +39,9 @@ RUN cd custom_nodes/ComfyUI-WanVideoWrapper && patch -p1 -N --silent < /patches/
 
 # Force-disable the T2V check that blocks image_embeds (since we use dummy embeds)
 RUN sed -i 's|if transformer.in_dim == 16:|if False and transformer.in_dim == 16:|' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
-# Inject image_cond = None to force T2V mode and avoid tensor mismatch in conditioning
-RUN sed -i 's|has_ref = image_embeds.get("has_ref", False)|has_ref = image_embeds.get("has_ref", False); image_cond = None|' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+# Force image_cond to None to avoid channel mismatch (16 vs 36 channels)
+RUN sed -i 's|image_cond = image_embeds.get(|image_cond = None # image_embeds.get(|' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
+RUN sed -i 's|if image_cond is not None:|if False and image_cond is not None:|' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
 # Nuclear Math Fix: wrap the noise math to handle mismatched input_samples (e.g. 16 vs 81 frames)
 RUN sed -i 's|noise = noise \* latent_timestep / 1000 + (1 - latent_timestep / 1000) \* input_samples|noise = noise * latent_timestep / 1000 + (1 - latent_timestep / 1000) * input_samples if (input_samples is not None and input_samples.shape == noise.shape) else noise|' custom_nodes/ComfyUI-WanVideoWrapper/nodes_sampler.py || true
 
